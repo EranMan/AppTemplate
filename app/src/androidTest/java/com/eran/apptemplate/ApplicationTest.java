@@ -1,4 +1,4 @@
-package learn.lzh.com.apptemplate;
+package com.eran.apptemplate;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

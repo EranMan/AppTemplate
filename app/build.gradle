@@ -1,26 +1,109 @@
 apply plugin: 'com.android.application'
+//获取当前系统时间
+def releaseTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+8"))
+}
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "24.0.0 rc3"
-
+    compileSdkVersion 21
+    buildToolsVersion '23.0.3'
+    //签名配置
+    signingConfigs {
+        release {
+            keyAlias 'eran'
+            keyPassword '123456'
+            storeFile file('eran.jks')
+            storePassword '123456'
+        }
+    }
     defaultConfig {
-        applicationId "learn.lzh.com.apptemplate"
-        minSdkVersion 19
+        applicationId "com.eran.apptemplate"
+        minSdkVersion 11
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true //dex突破65535限制
+        //manifestPlaceholders = [UMENG_CHANNEL_VALUE: "eran"]
     }
     buildTypes {
         release {
-            minifyEnabled false
+            //是否开启LOG日志
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            //Zipalign优化
+            zipAlignEnabled true
+            //是否混淆
+            minifyEnabled true
+            // 是否去除无效的资源文件
+            shrinkResources true
+            //签名配置
+            signingConfig signingConfigs.release
+            // 混淆文件地址
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //修改对应包名,加上时间和渠道等信息
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def fileName = outputFile.name.replace(".apk", "_${defaultConfig.versionName}_${releaseTime()}.apk")
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
+        }
+        debug {
+            jniDebuggable true
+            //versionName 后面加上debug标签
+            versionNameSuffix "-debug"
+            //是否开启LOG日志
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            //Zipalign优化
+            zipAlignEnabled true
+            //是否混淆
+            minifyEnabled true
+            // 是否去除无效的资源文件
+            shrinkResources false
+            //签名配置
+            signingConfig signingConfigs.release
+            // 混淆文件地址
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-}
 
+    //添加了jackson组件
+    packagingOptions {
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'LICENSE.txt'
+    }
+    //如果有.so文件就需要加上这一行代码
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+    //移除lint检查的error
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+    // 友盟多渠道打包
+    /*productFlavors {
+        _360 {
+            //manifestPlaceholders = [UMENG_CHANNEL_VALUE: "360"]
+        }
+
+    }*/
+}
+//引用了aar文件
+repositories {
+    flatDir {
+        dirs 'aar'
+    }
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:multidex:1.0.0'
 }
