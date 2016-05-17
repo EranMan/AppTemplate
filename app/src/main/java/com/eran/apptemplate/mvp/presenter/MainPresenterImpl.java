@@ -18,29 +18,33 @@
 
 package com.eran.apptemplate.mvp.presenter;
 
-import java.util.List;
-
-import com.eran.apptemplate.mvp.interactor.FindItemsInteractor;
-import com.eran.apptemplate.mvp.interactor.FindItemsInteractorImpl;
+import com.eran.apptemplate.mvp.interactor.LoginInteractor;
+import com.eran.apptemplate.mvp.interactor.LoginInteractorImp;
 import com.eran.apptemplate.mvp.viewinf.MainView;
 
-
-public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnFinishedListener {
+/**
+ * 类描述：业务类
+ * 创建人： 唐僧 Eran
+ * 创建时间：2016/5/3
+ * 修改人： 唐僧 Eran
+ * 修改时间：2016/5/3
+ * 修改备注：
+ */
+public class MainPresenterImpl implements MainPresenter, LoginInteractor.OnFinishedListener {
 
     private MainView mainView;
-    private FindItemsInteractor findItemsInteractor;
+    private LoginInteractor loginInteractor;
 
     public MainPresenterImpl(MainView mainView) {
         this.mainView = mainView;
-        findItemsInteractor = new FindItemsInteractorImpl();
+        loginInteractor = new LoginInteractorImp();
     }
 
     @Override public void onResume() {
         if (mainView != null) {
             mainView.showProgress();
         }
-
-        findItemsInteractor.findItems(this);
+        loginInteractor.login("唐僧", "123456", this);
     }
 
     @Override public void onItemClicked(int position) {
@@ -53,10 +57,9 @@ public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnF
         mainView = null;
     }
 
-    @Override public void onFinished(List<String> items) {
-        if (mainView != null) {
-            mainView.setItems(items);
-            mainView.hideProgress();
-        }
+
+    @Override
+    public void loginFinished() {
+
     }
 }

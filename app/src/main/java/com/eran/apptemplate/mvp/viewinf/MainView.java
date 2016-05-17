@@ -19,7 +19,14 @@
 package com.eran.apptemplate.mvp.viewinf;
 
 import java.util.List;
-
+/**
+ * 类描述：
+ * 创建人： 唐僧 Eran
+ * 创建时间：2016/5/3
+ * 修改人： 唐僧 Eran
+ * 修改时间：2016/5/3
+ * 修改备注：
+ */
 public interface MainView {
 
     void showProgress();

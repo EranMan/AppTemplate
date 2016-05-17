@@ -36,7 +36,14 @@ import com.eran.apptemplate.mvp.presenter.MainPresenter;
 import com.eran.apptemplate.mvp.presenter.MainPresenterImpl;
 import com.eran.apptemplate.mvp.viewinf.MainView;
 
-
+/**
+ * 类描述：View 层处理
+ * 创建人： 唐僧 Eran
+ * 创建时间：2016/5/3
+ * 修改人： 唐僧 Eran
+ * 修改时间：2016/5/3
+ * 修改备注：
+ */
 public class MainActivity extends Activity implements MainView, AdapterView.OnItemClickListener {
 
     private ListView listView;
@@ -75,30 +82,36 @@ public class MainActivity extends Activity implements MainView, AdapterView.OnIt
         }
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         presenter.onDestroy();
         super.onDestroy();
     }
 
-    @Override public void showProgress() {
+    @Override
+    public void showProgress() {
         progressBar.setVisibility(View.VISIBLE);
         listView.setVisibility(View.INVISIBLE);
     }
 
-    @Override public void hideProgress() {
+    @Override
+    public void hideProgress() {
         progressBar.setVisibility(View.INVISIBLE);
         listView.setVisibility(View.VISIBLE);
     }
 
-    @Override public void setItems(List<String> items) {
+    @Override
+    public void setItems(List<String> items) {
         listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items));
     }
 
-    @Override public void showMessage(String message) {
+    @Override
+    public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
-    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         presenter.onItemClicked(position);
     }
 }
