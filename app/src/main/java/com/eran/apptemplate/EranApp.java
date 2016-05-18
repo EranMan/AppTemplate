@@ -2,6 +2,9 @@ package com.eran.apptemplate;
 
 import android.app.Application;
 import android.content.Context;
+
+import com.eran.apptemplate.exception.crash.CustomCrash;
+
 /**
  * 类描述：自定义项目Application
  * 创建人： 唐僧 Eran
@@ -11,16 +14,17 @@ import android.content.Context;
  * 修改备注：
  */
 public class EranApp extends Application {
-	private static Context mContext;
+	private static EranApp instance;
+	public  static EranApp getInstance(){
+		return instance;
+	}
    // private DBManager dbHelper;
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		mContext = getApplicationContext();
-
-	}
-	
-	public static Context getContext() {
-		return mContext;
+		instance =this;
+		//初始化崩溃日志收集器
+		CustomCrash mCustomCrash=CustomCrash.getInstance();
+		//mCustomCrash.setCustomCrashInfo(this);
 	}
 }
